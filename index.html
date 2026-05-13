@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Taylor Era Mirror - 用 Taylor Swift 的 Era 概念映照你当下的人生状态、情绪阶段与审美能量。"
+    />
+    <title>Taylor Era Mirror</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="stage quiz-stage" id="quizStage" aria-labelledby="appTitle">
+        <div class="brand-mark">
+          <span></span>
+          <p>Taylor Era Mirror</p>
+        </div>
+
+        <div class="hero-grid">
+          <div class="intro">
+            <p class="eyebrow">AI PERSONAL ERA TEST</p>
+            <h1 id="appTitle">
+              <span class="title-cn">把最近的你，</span>
+              <span class="title-cn title-cn-second">照进一个</span>
+              <span class="title-en">Taylor Era.</span>
+            </h1>
+            <p class="intro-copy">
+              回答几道关于情绪、人生阶段、审美和关系处理的问题，再写下一句最近的状态。镜面会生成你的当下 Era、人格解读、关键词、配色、今日建议和可分享卡片。
+            </p>
+          </div>
+
+          <aside class="mirror-panel" aria-label="Era preview">
+            <div class="mirror-card">
+              <div class="vinyl">
+                <span></span>
+              </div>
+              <div class="orbit orbit-one"></div>
+              <div class="orbit orbit-two"></div>
+              <p>reflecting...</p>
+            </div>
+          </aside>
+        </div>
+
+        <form class="quiz-card" id="quizForm">
+          <div class="progress-wrap" aria-label="测试进度">
+            <div class="progress-top">
+              <span id="stepLabel">01 / 05</span>
+              <span id="stepName">情绪状态</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <div class="question-view" id="questionView"></div>
+
+          <div class="form-actions">
+            <button class="icon-button ghost" type="button" id="prevBtn" aria-label="上一题">
+              <span aria-hidden="true">←</span>
+            </button>
+            <button class="primary-button" type="button" id="nextBtn">下一题</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="stage result-stage hidden" id="resultStage" aria-live="polite">
+        <div class="result-toolbar">
+          <button class="icon-button ghost" type="button" id="restartBtn" aria-label="重新测试">
+            <span aria-hidden="true">↺</span>
+          </button>
+          <div class="brand-mark compact">
+            <span></span>
+            <p>Taylor Era Mirror</p>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <article class="result-main" id="resultMain">
+            <p class="eyebrow">YOUR CURRENT ERA</p>
+            <h2 id="eraTitle"></h2>
+            <p class="score-line" id="scoreLine"></p>
+            <p class="result-copy" id="resultCopy"></p>
+            <div class="keyword-row" id="keywordRow"></div>
+            <div class="palette-row" id="paletteRow" aria-label="专属配色"></div>
+          </article>
+
+          <aside class="advice-panel">
+            <p class="panel-label">今日建议</p>
+            <h3 id="adviceTitle"></h3>
+            <p id="adviceCopy"></p>
+            <div class="action-row">
+              <button class="primary-button" type="button" id="roomBtn">进入 Era Room</button>
+              <button class="secondary-button" type="button" id="cardBtn">分享我的 Era</button>
+            </div>
+          </aside>
+        </div>
+
+        <canvas class="share-canvas hidden" id="shareCanvas" width="1200" height="1600"></canvas>
+        <div class="share-modal hidden" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+          <div class="share-backdrop" id="shareBackdrop"></div>
+          <div class="share-panel">
+            <div class="share-art">
+              <img alt="Taylor Era Mirror 分享卡片预览" id="shareImage" />
+            </div>
+            <div class="share-controls">
+              <p class="panel-label">SHARE CARD</p>
+              <h3 id="shareModalTitle">分享你的当下 Era</h3>
+              <p>保存这张专属海报，或复制页面链接发给朋友一起测试。</p>
+              <div class="share-actions">
+                <button class="primary-button" type="button" id="downloadCardBtn">下载图片</button>
+                <button class="secondary-button" type="button" id="closeShareBtn">关闭</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="room-stage hidden" id="roomStage" aria-label="Era Room">
+        <div class="room-bg" id="roomBg"></div>
+        <div class="room-topbar">
+          <button class="icon-button solid" type="button" id="backResultBtn" aria-label="返回结果">
+            <span aria-hidden="true">←</span>
+          </button>
+          <p id="roomTitle">Era Room</p>
+        </div>
+
+        <div class="room-content">
+          <div class="room-title-block">
+            <p class="eyebrow">IMMERSIVE ROOM</p>
+            <h2 id="roomEra"></h2>
+          </div>
+          <div class="marquee" aria-hidden="true">
+            <div id="marqueeText"></div>
+          </div>
+        </div>
+
+        <div class="player">
+          <button class="play-button" type="button" id="playBtn" aria-label="播放或暂停氛围音">
+            <span id="playIcon">▶</span>
+          </button>
+          <div>
+            <p id="trackTitle"></p>
+            <div class="fake-wave" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

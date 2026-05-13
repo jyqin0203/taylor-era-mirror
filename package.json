@@ -1,0 +1,9 @@
+{
+  "name": "taylor-era-mirror",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A static Taylor Swift themed personalized Era mirror quiz.",
+  "scripts": {
+    "dev": "python -m http.server 5188 --bind 127.0.0.1"
+  }
+}
