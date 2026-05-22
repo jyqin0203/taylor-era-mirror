@@ -1,0 +1,48 @@
+version: 2.0
+
+# Replace this with your own CloudBase environment ID when deploying.
+env: ${params:CLOUDBASE_ENV_ID}
+
+static:
+  src: ./
+  cloudPath: /
+  ignore:
+    - .git/**
+    - .gitignore
+    - node_modules/**
+    - cloudbase.config.yml
+    - cloudbaserc.json
+    - deploy-managefunction.json
+    - .agents/**
+    - .cloudbase-mcp-logs/**
+    - .npm-cache/**
+    - output/**
+    - test-results/**
+    - README.md
+    - skills-lock.json
+
+functions:
+  - name: era-ai
+    root: ./cloudfunctions
+    functionsDir: ./
+    runtime: Nodejs18.15
+    handler: index.main
+    timeout: 30
+    envVariables:
+      DASHSCOPE_API_KEY: ${params:DASHSCOPE_API_KEY}
+      BAILIAN_MODEL: qwen-plus
+      BAILIAN_BASE_URL: https://dashscope.aliyuncs.com/compatible-mode/v1
+    triggers:
+      - type: http
+        name: http-trigger
+        config: "POST,GET,OPTIONS"
+    labels:
+      creator: cloudbase-framework
+
+parameters:
+  CLOUDBASE_ENV_ID:
+    required: true
+    description: "Your CloudBase environment ID"
+  DASHSCOPE_API_KEY:
+    required: true
+    description: "DashScope API Key for AI service"

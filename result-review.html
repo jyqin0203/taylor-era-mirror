@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Taylor Era Mirror result page review." />
+    <title>Result Review | Taylor Era Mirror</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .review-strip {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: grid;
+        gap: 12px;
+        padding: 14px clamp(18px, 4vw, 56px);
+        border-bottom: 1px solid rgba(29, 24, 32, 0.1);
+        background: rgba(255, 250, 245, 0.82);
+        backdrop-filter: blur(18px);
+      }
+
+      .review-strip-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .review-strip h1 {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .review-strip a {
+        color: rgba(29, 24, 32, 0.72);
+        font-size: 12px;
+        font-weight: 900;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .review-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+
+      .review-tabs button {
+        flex: 0 0 auto;
+        min-height: 36px;
+        padding: 0 12px;
+        border: 1px solid rgba(29, 24, 32, 0.12);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.56);
+        color: rgba(29, 24, 32, 0.74);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .review-tabs button.is-active {
+        color: #fff;
+        background: var(--era-ink);
+      }
+
+      .review-stage {
+        min-height: calc(100vh - 108px);
+      }
+
+      .review-stage .result-toolbar {
+        margin-top: 0;
+      }
+
+      .review-stage .icon-button {
+        text-decoration: none;
+      }
+
+      @media (max-width: 820px) {
+        .review-strip-top {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .review-stage {
+          min-height: calc(100vh - 138px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="review-strip">
+      <div class="review-strip-top">
+        <h1>Result Page Review</h1>
+        <a href="./index.html">Back To Test</a>
+      </div>
+      <div class="review-tabs" id="reviewTabs" aria-label="Era result selector"></div>
+    </header>
+
+    <main class="app-shell">
+      <section class="stage result-stage review-stage" id="resultStage" aria-live="polite">
+        <div class="era-sticker-layer" aria-hidden="true"></div>
+        <div class="result-toolbar">
+          <a class="icon-button ghost" href="./index.html" aria-label="Back to test">
+            <span aria-hidden="true">&larr;</span>
+          </a>
+          <div class="brand-mark compact">
+            <span></span>
+            <p>Taylor Era Mirror</p>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <article class="result-main" id="resultMain">
+            <p class="eyebrow">YOUR CURRENT ERA</p>
+            <h2 id="eraTitle"></h2>
+            <p class="score-line" id="scoreLine"></p>
+            <div class="result-era-photo hidden" id="resultEraPhotoWrap">
+              <img alt="" id="resultEraPhoto" />
+            </div>
+            <p class="result-copy" id="resultCopy"></p>
+            <div class="keyword-row" id="keywordRow"></div>
+            <div class="palette-row" id="paletteRow" aria-label="Color palette"></div>
+          </article>
+
+          <aside class="advice-panel">
+            <p class="panel-label">TODAY ADVICE</p>
+            <h3 id="adviceTitle"></h3>
+            <p id="adviceCopy"></p>
+            <div class="song-panel">
+              <p class="panel-label">Taylor Song</p>
+              <strong id="songTitle"></strong>
+              <span id="songReason"></span>
+              <em id="songQuote"></em>
+            </div>
+            <div class="action-row">
+              <button class="primary-button" type="button">Enter Era Room</button>
+              <button class="secondary-button" type="button">Share My Era</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const eraImages = {
+        debut: "./assets/eras/taylor-swift.jpg",
+        fearless: "./assets/eras/fearless.jpg",
+        speaknow: "./assets/eras/speak-now.jpg",
+        red: "./assets/eras/red.jpg",
+        "1989": "./assets/eras/1989.jpg",
+        reputation: "./assets/eras/reputation.jpg",
+        lover: "./assets/eras/lover.jpg",
+        folklore: "./assets/eras/folklore.jpg",
+        evermore: "./assets/eras/evermore.jpg",
+        midnights: "./assets/eras/midnights.jpg",
+        ttpd: "./assets/eras/ttpd.jpg",
+        showgirl: "./assets/eras/showgirl.jpg",
+      };
+
+      const effectCounts = {
+        debut: 14,
+        fearless: 28,
+        speaknow: 10,
+        red: 12,
+        "1989": 12,
+        reputation: 16,
+        lover: 18,
+        folklore: 10,
+        evermore: 16,
+        midnights: 24,
+        ttpd: 8,
+        showgirl: 22,
+      };
+
+      const eras = {
+        debut: makeEra("Taylor Swift Era", "Fresh Start", ["#b8d9c0", "#f6d88f", "#fff8e8", "#7b9a73"], "#213827", ["Honest", "New", "Open", "Country"], "A soft beginning with room for curiosity, honesty, and unfinished details.", "Leave space for a small first step.", "Our Song"),
+        fearless: makeEra("Fearless Era", "Golden Courage", ["#f3c96a", "#fff4c7", "#d49a45", "#72513a"], "#4b351b", ["Brave", "Bright", "Open", "Forward"], "A warm result page for choosing movement even when the next step is not fully certain.", "Turn one vague wish into a visible action.", "Fearless"),
+        speaknow: makeEra("Speak Now Era", "Purple Declaration", ["#b58ad7", "#f2dcff", "#6f4a91", "#fff6fb"], "#3b2450", ["Voice", "Magic", "Purple", "Story"], "A theatrical result page for saying the sentence that has been waiting too long.", "Say one true thing without over-editing it.", "Long Live"),
+        red: makeEra("Red Era", "Intense Reflection", ["#b9232f", "#e9745f", "#f4d7bd", "#2e1f23"], "#2e1f23", ["Intense", "Memory", "Autumn", "Release"], "A high-emotion result page for naming old feelings clearly before moving forward.", "Give the feeling a clean exit instead of keeping it looping.", "All Too Well"),
+        "1989": makeEra("1989 Era", "City Restart", ["#8cc5df", "#f5efe4", "#273d5f", "#e2a7a1"], "#172a44", ["Clean", "City", "Free", "Reset"], "A crisp result page for rebuilding rhythm, image, and direction.", "Change one visible part of your daily routine.", "Clean"),
+        reputation: makeEra("Reputation Era", "Boundary Reset", ["#15151a", "#77737f", "#d8d2c9", "#4d624f"], "#101015", ["Boundary", "Control", "Quiet", "Power"], "A controlled result page for keeping energy away from people who misread it.", "Explain less and move with more precision.", "Delicate"),
+        lover: makeEra("Lover Era", "Soft Glow", ["#f5a7bd", "#a9c6ef", "#fff0cc", "#8f6aa6"], "#563653", ["Tender", "Bright", "Warm", "Open"], "A gentle result page for allowing softness without losing clarity.", "Add one small piece of warmth to the day.", "Daylight"),
+        folklore: makeEra("Folklore Era", "Quiet Narrative", ["#d9d7ce", "#8f9691", "#f7f4ec", "#39403d"], "#29302d", ["Quiet", "Story", "Mist", "Still"], "A quiet result page for processing details before turning them into a story.", "Take twenty minutes without notifications.", "mirrorball"),
+        evermore: makeEra("Evermore Era", "Steady Maturity", ["#9b5e3f", "#d8b77f", "#2d4739", "#f1dfc8"], "#2d261f", ["Steady", "Long", "Forest", "Release"], "A grounded result page for turning complicated experience into stable strength.", "Update one old conclusion about yourself.", "evermore"),
+        midnights: makeEra("Midnights Era", "Late Night Clarity", ["#1d2545", "#5a6aa0", "#c9b7e8", "#f0d08a"], "#151a35", ["Awake", "Night", "Desire", "Clear"], "A sharp result page for admitting ambition, fatigue, and the need for security.", "Write the loop in your head as a short list.", "You're On Your Own, Kid"),
+        ttpd: makeEra("The Tortured Poets Department Era", "Paper Trial", ["#f2eee7", "#b8afa5", "#2d2a28", "#7b7168"], "#24211f", ["Paper", "Ink", "Sharp", "Truth"], "A clean result page for turning emotional noise into precise sentences.", "Give the complicated feeling an exact title.", "The Black Dog"),
+        showgirl: makeEra("The Life of a Showgirl Era", "Final Bow", ["#1f7f86", "#f6a640", "#fff4de", "#0f4f55"], "#2b1b22", ["Stage", "Glow", "Poise", "Highlight"], "A polished result page for letting tiredness and shine stand under the same light.", "Make one part of today feel worthy of the spotlight.", "The Fate of Ophelia"),
+      };
+
+      function makeEra(title, zh, palette, ink, keywords, copy, advice, songTitle) {
+        return {
+          title,
+          zh,
+          palette,
+          ink,
+          keywords,
+          copy,
+          adviceTitle: advice,
+          advice: "This text is a review placeholder for spacing, rhythm, and visual balance.",
+          song: [songTitle, "Song module placeholder for result page review.", "A complete English word should stay on one line in the generated share card."],
+        };
+      }
+
+      const tabs = document.querySelector("#reviewTabs");
+      const photoWrap = document.querySelector("#resultEraPhotoWrap");
+      const photo = document.querySelector("#resultEraPhoto");
+
+      Object.entries(eras).forEach(([id, era]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.era = id;
+        button.textContent = era.title.replace(" Era", "");
+        button.addEventListener("click", () => renderEra(id));
+        tabs.appendChild(button);
+      });
+
+      function renderEra(id) {
+        const eraId = eras[id] ? id : "showgirl";
+        const era = eras[eraId];
+        const root = document.documentElement;
+        root.style.setProperty("--era-a", era.palette[0]);
+        root.style.setProperty("--era-b", era.palette[1]);
+        root.style.setProperty("--era-c", era.palette[2]);
+        root.style.setProperty("--era-ink", era.ink);
+
+        document.querySelectorAll("[data-era]").forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.era === eraId);
+        });
+
+        document.querySelector("#eraTitle").textContent = era.title;
+        document.querySelector("#scoreLine").textContent = `${era.zh} · mirror match 92%`;
+        document.querySelector("#resultCopy").textContent = era.copy;
+        document.querySelector("#keywordRow").innerHTML = era.keywords.map((keyword) => `<span>${keyword}</span>`).join("");
+        document.querySelector("#paletteRow").innerHTML = era.palette
+          .map((color) => `<span style="background:${color}"></span>`)
+          .join("");
+        document.querySelector("#adviceTitle").textContent = era.adviceTitle;
+        document.querySelector("#adviceCopy").textContent = era.advice;
+        document.querySelector("#songTitle").textContent = era.song[0];
+        document.querySelector("#songReason").textContent = era.song[1];
+        document.querySelector("#songQuote").textContent = era.song[2];
+
+        renderPhoto(eraId, era.title);
+      }
+
+      function renderPhoto(id, title) {
+        photoWrap.className = "result-era-photo hidden";
+        photoWrap.querySelector(".era-effect-layer")?.remove();
+        photo.removeAttribute("src");
+        photo.alt = `${title} image`;
+        photo.onload = () => {
+          photoWrap.classList.add("has-photo", `effect-${id}`);
+          photoWrap.appendChild(createEffectLayer(id, effectCounts[id] || 14));
+          photoWrap.classList.remove("hidden");
+        };
+        photo.onerror = () => photoWrap.classList.add("hidden");
+        photo.src = eraImages[id];
+      }
+
+      function createEffectLayer(id, count) {
+        const layer = document.createElement("div");
+        layer.className = "era-effect-layer";
+        layer.setAttribute("aria-hidden", "true");
+
+        for (let index = 0; index < count; index += 1) {
+          const item = document.createElement("span");
+          item.style.setProperty("--x", `${Math.random() * 100}%`);
+          item.style.setProperty("--delay", `${Math.random() * 4.5}s`);
+          item.style.setProperty("--dur", `${4 + Math.random() * 5}s`);
+          item.style.setProperty("--size", `${8 + Math.random() * 18}px`);
+          item.style.setProperty("--drift", `${-40 + Math.random() * 80}px`);
+          item.style.setProperty("--rot", `${Math.random() * 360}deg`);
+          layer.appendChild(item);
+        }
+
+        return layer;
+      }
+
+      renderEra(new URLSearchParams(window.location.search).get("era") || "showgirl");
+    </script>
+  </body>
+</html>

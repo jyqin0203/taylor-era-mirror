@@ -1,2 +1,13 @@
 .playwright-cli/
 output/
+test-results/
+.env
+.env.*
+!.env.example
+.agents/
+.cloudbase-mcp-logs/
+.npm-cache/
+AGENT.md
+skills-lock.json
+cloudbaserc.json
+deploy-managefunction.json

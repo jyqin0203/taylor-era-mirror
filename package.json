@@ -4,6 +4,7 @@
   "private": true,
   "description": "A static Taylor Swift themed personalized Era mirror quiz.",
   "scripts": {
-    "dev": "python -m http.server 5188 --bind 127.0.0.1"
+    "dev": "python -m http.server 5188 --bind 127.0.0.1",
+    "check": "node --check app.js && node --check era-gallery-bilibili.js && node --check cloudfunctions/era-ai/index.js"
   }
 }
